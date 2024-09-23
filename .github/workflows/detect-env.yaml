@@ -1,10 +1,11 @@
-name: Detect environment
+name: Detect Environment
 
 on:
   push:
-    - dev/config.yaml
-    - stage/config.yaml
-    - prod/config.yaml
+    paths:
+      - dev/config.yaml
+      - stage/config.yaml
+      - prod/config.yaml
 
 jobs:
   detect-config-change:
