@@ -1,0 +1,16 @@
+name: Detect environment
+
+on:
+  push:
+    - dev/config.yaml
+    - stage/config.yaml
+    - prod/config.yaml
+
+jobs:
+  detect-config-change:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
