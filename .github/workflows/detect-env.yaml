@@ -18,7 +18,7 @@ on:
 
 env: 
   ENVIRONMENT: ${{ inputs.envType }}  # Set the environment variable based on the selected input.
-  REALMS_MAPPING: ${{ format('envs/{0}/env-config.yaml', env.ENVIRONMENT) }}  # Construct path based on ENVIRONMENT.
+  REALMS_MAPPING: envs/${{ env.ENVIRONMENT }}/env-config.yaml  # Construct path based on ENVIRONMENT.
 
 jobs:
   deploy:
