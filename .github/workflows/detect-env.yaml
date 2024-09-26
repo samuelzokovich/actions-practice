@@ -33,7 +33,7 @@ jobs:
           echo "Using realms mapping file: ${{ env.REALMS_MAPPING }}"
 
       - name: Changed file
-        uses: Stockopedia/action-get-changed-files@v1
+        uses: Stockopedia/action-get-changed-files@v2
         id: get_changed
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
