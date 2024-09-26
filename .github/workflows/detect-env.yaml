@@ -27,5 +27,6 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
       - name: Deploy container web
-        run: echo "Deploying to environment: ${{ env.ENVIRONMENT }}"
-         
+        run: |
+          echo "Deploying to environment: ${{ env.ENVIRONMENT }}"
+          echo "Using realms mapping file: ${{ env.REALMS_MAPPING }}"
