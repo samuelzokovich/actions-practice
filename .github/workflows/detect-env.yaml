@@ -1,17 +1,31 @@
-name: Detect Environment
+name: Deploy container web to Stratosphere
 
 on:
   push:
-    paths:
-      - dev/config.yaml
-      - stage/config.yaml
-      - prod/config.yaml
+    branches:
+      - 'main'
+
+  workflow_dispatch:
+    inputs:
+      envType: 
+        description: "Please select the Environment Type"
+        required: true
+        type: choice
+        options: 
+          - dev-us
+          - psr-us
+          - qa-us
+
+env: 
+  ENVIRONMENT: ${{ inputs.envType }}  # Set the environment variable based on the selected input.
+  REALMS_MAPPING: ${{ format('envs/{0}/env-config.yaml', env.ENVIRONMENT) }}  # Construct path based on ENVIRONMENT.
 
 jobs:
-  detect-config-change:
+  deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: checkout
-        uses: actions/checkout@v4
-
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: Deploy container web
+        run: echo "Deploying to environment: ${{ env.ENVIRONMENT }}"
+         
