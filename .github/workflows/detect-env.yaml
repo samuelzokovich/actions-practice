@@ -16,16 +16,18 @@ on:
           - psr-us
           - qa-us
 
+env:
+  ENVIRONMENT: ${{ inputs.envType }}
+  REALMS_MAPPING: envs/${{ inputs.envType }}/env-config.yaml
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env: 
-      ENVIRONMENT: ${{ inputs.envType }}  # Set the environment variable based on the selected input.
-      REALMS_MAPPING: envs/${{ env.ENVIRONMENT }}/env-config.yaml  # Construct path based on ENVIRONMENT.
     steps:
       - name: Check out code
         uses: actions/checkout@v2
-      - name: Deploy container web
+
+      - name: Display Environment and Realms Mapping
         run: |
           echo "Deploying to environment: ${{ env.ENVIRONMENT }}"
           echo "Using realms mapping file: ${{ env.REALMS_MAPPING }}"
