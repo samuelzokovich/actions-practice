@@ -40,3 +40,4 @@ jobs:
       - name: Echo
         run: |
           echo ${{ steps.get_last_changed_files.outputs.all }}
+          cat files.json
