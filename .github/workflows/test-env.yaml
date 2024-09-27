@@ -10,14 +10,16 @@ jobs:
       matrix:
         environment: [dev-us, psr-us, qa-us]
         service: [sample-service, dispatch-service, track-service, shipment-service]
-    if: matrix.service != 'sample-service' || matrix.environment == 'dev-us'
+    
         
     steps:
       - name: Print environment and service
+        if: matrix.service != 'sample-service' || matrix.environment == 'dev-us'
         run: |
           echo "Running for environment: ${{ matrix.environment }}"
           echo "Running service: ${{ matrix.service }}"
       - name: Print environment and service
+        if: matrix.service != 'sample-service' || matrix.environment == 'dev-us'
         run: |
           echo "Running for environment: ${{ matrix.environment }}"
           echo "Running service: ${{ matrix.service }}"
