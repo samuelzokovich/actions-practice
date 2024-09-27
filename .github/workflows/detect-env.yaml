@@ -33,9 +33,10 @@ jobs:
           echo "Using realms mapping file: ${{ env.REALMS_MAPPING }}"
 
       - uses: lots0logs/gh-action-get-changed-files@2.2.2
+        id: get_last_changed_files
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Echo
         run: |
-          echo ${{ steps.get_changed.outputs.changed }}
+          echo ${{ steps.get_last_changed_files.outputs.all }}
