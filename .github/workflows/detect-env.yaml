@@ -87,9 +87,10 @@ jobs:
   Print:
     runs-on: ubuntu-latest
     strategy:
-      environment: ${{ env.ENVIRONMENT }}
-      service: [sample-service, delivery-service]
+      matrix:
+        environment: ${{ env.ENVIRONMENT }}
+        service: [sample-service, delivery-service]
     steps:
-      - name: Deploy ${{ service }} on ${{ env.ENVIRONMENT }}
+      - name: Deploy ${{ matrix.service }} on ${{ matrix.environment }}
         run: |
          echo "Deployed" 
