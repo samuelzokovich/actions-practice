@@ -84,4 +84,12 @@ jobs:
         run: |
           #/bin/bash
           echo "The environment variable is: ${{ env.ENVIRONMENT }}"
-
+  Print:
+    runs-on: ubuntu-latest
+    strategy:
+      environment: ${{ env.ENVIRONMENT }}
+      service: [sample-service, delivery-service]
+    steps:
+      - name: Deploy ${{ service }} on ${{ env.ENVIRONMENT }}
+        run: |
+         echo "Deployed" 
