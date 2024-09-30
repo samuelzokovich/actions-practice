@@ -81,4 +81,4 @@ jobs:
           echo "ENVIRONMENT=${extracted_parts[@]}" >> $GITHUB_ENV
 
       - name: Confirm ENVIRONMENT variable is set
-        run: echo "The environment variable is: $ENVIRONMENT"
+        run: echo "The environment variable is: ${{ env.ENVIRONMENT }}"
