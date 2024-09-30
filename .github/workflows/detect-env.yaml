@@ -57,6 +57,7 @@ jobs:
           # Loop through each file path
           for path in $file_paths; do
             # Check if the path matches the pattern env/*/web-container/
+            echo $path
             if [[ $path =~ env/([^/]+)/web-container/[^/]+ ]]; then
               # Store the matching path
               matching_paths+=("$path")
