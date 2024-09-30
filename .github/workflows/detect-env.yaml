@@ -22,7 +22,7 @@ on:
           - qa-us
 
 jobs:
-  deploy:
+  Deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
