@@ -62,7 +62,6 @@ jobs:
           # Loop through each file path
           for path in $file_paths; do
             # Check if the path matches the pattern env/*/web-container/
-            echo $path
             if [[ $path =~ envs/([^/]+)/web-container/[^/]+ ]]; then
               # Store the matching path
               matching_paths+=("$path")
@@ -81,4 +80,5 @@ jobs:
 
           echo "ENVIRONMENT=${extracted_parts[@]}" >> $GITHUB_ENV
 
-          echo "{{ env.ENVIRONMENT }}"
+      - name: Confirm ENVIRONMENT variable is set
+        run: echo "The environment variable is: $ENVIRONMENT"
