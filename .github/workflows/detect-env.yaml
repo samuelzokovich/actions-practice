@@ -78,3 +78,7 @@ jobs:
 
           echo "Extracted Parts:"
           printf "%s\n" "${extracted_parts[@]}"
+
+          echo "ENVIRONMENT=${extracted_parts[@]}" >> $GITHUB_ENV
+
+          echo "{{ env.ENVIRONMENT }}"
