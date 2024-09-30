@@ -21,10 +21,6 @@ on:
           - psr-us
           - qa-us
 
-env:
-  ENVIRONMENT: ${{ inputs.envType }}
-  REALMS_MAPPING: envs/${{ inputs.envType }}/env-config.yaml
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -34,12 +30,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Display Environment and Realms Mapping
-        run: |
-          echo "Deploying to environment: ${{ env.ENVIRONMENT }}"
-          echo "Using realms mapping file: ${{ env.REALMS_MAPPING }}"
-
-      - uses: lots0logs/gh-action-get-changed-files@2.2.2
+       - uses: lots0logs/gh-action-get-changed-files@2.2.2
         id: get_last_changed_files
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
