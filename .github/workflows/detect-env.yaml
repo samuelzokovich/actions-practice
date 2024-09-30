@@ -39,8 +39,13 @@ jobs:
         run: |
           echo ${{ steps.get_last_changed_files.outputs.all }}
           cat ${HOME}/files.json
+
+      - name: Set environment for workflow_dispatch
+        if: github.event_name == 'workflow_dispatch'
+        run: echo "ENVIRONMENT={{ input.envType }}" >> $GITHUB_ENV
   
       - name: Detect environment(s)
+        if: github.event_name != 'workflow_dispatch'
         id: detect_environment
         run: |
           #!/bin/bash
