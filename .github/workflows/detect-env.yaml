@@ -26,8 +26,8 @@ jobs:
       - name: Detect environment
         id: detect_environment
         run: |
-          # Create a JSON array from the selected input
-          ENVIRONMENT_ARRAY=$(echo "${{ inputs.envType }}" | jq -R -s 'split(" ")')
+          # Create a JSON array from the selected input without newlines
+          ENVIRONMENT_ARRAY=$(echo "${{ inputs.envType }}" | jq -R -s 'split(" ") | map(select(length > 0))')
           
           # Set the output variable to use in later steps
           echo "environment_array=$ENVIRONMENT_ARRAY" >> $GITHUB_OUTPUT
