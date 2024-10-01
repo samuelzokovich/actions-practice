@@ -1,38 +1,56 @@
-name: Deploy Workflow
+name: Dynamic Deployment Pipeline
 
 on:
   workflow_dispatch:
     inputs:
-      envType:
-        description: 'Select the environment type'
+      environments:
+        description: 'List of environments (comma-separated)'
         required: true
-        type: choice
-        options: 
-          - dev-us
-          - qa-us
-          - prd-us
-          - psr-us  # Add any other options as needed
-        default: dev-us  # Default selected option
+        type: string
+      applications:
+        description: 'List of application names (comma-separated)'
+        required: true
+        type: string
 
 jobs:
-  Deploy:
+  get-environments:
     runs-on: ubuntu-latest
+    outputs:
+      env_array: ${{ steps.envs.outputs.env_array }}
     steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Detect environment
-        id: detect_environment
+      - name: Get environments
+        id: envs
         run: |
-          # Create a JSON array from the selected input without newlines
-          ENVIRONMENT_ARRAY=$(echo "${{ inputs.envType }}" | jq -R -s 'split(" ") | map(select(length > 0))')
-          
-          # Set the output variable to use in later steps
-          echo "environment_array=$ENVIRONMENT_ARRAY" >> $GITHUB_OUTPUT
+          # Split the input environments into an array
+          IFS=',' read -r -a env_array <<< "${{ github.event.inputs.environments }}"
+          echo "Environments: ${env_array[@]}"
+          # Write the array to GITHUB_OUTPUT for the next job
+          echo "env_array=$(echo ${env_array[@]})" >> $GITHUB_OUTPUT
 
-      - name: Use environment array
+  get-applications:
+    runs-on: ubuntu-latest
+    needs: get-environments
+    outputs:
+      app_array: ${{ steps.apps.outputs.app_array }}
+    steps:
+      - name: Get applications
+        id: apps
         run: |
-          # Access the environment array output
-          echo "The environment array is: ${{ steps.detect_environment.outputs.environment_array }}"
+          # Split the input applications into an array
+          IFS=',' read -r -a app_array <<< "${{ github.event.inputs.applications }}"
+          echo "Applications: ${app_array[@]}"
+          # Write the array to GITHUB_OUTPUT for the next job
+          echo "app_array=$(echo ${app_array[@]})" >> $GITHUB_OUTPUT
+
+  deploy-applications:
+    needs: [get-environments, get-applications]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: ${{ fromJson(needs.get-environments.outputs.env_array) }}
+        application: ${{ fromJson(needs.get-applications.outputs.app_array) }}
+    steps:
+      - name: Deploy application
+        run: |
+          echo "Deploying ${{ matrix.application }} to ${{ matrix.environment }}"
+          # Add actual deployment command here (e.g., kubectl, terraform, etc.)
