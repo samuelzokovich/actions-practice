@@ -1,3 +1,19 @@
+name: Deploy Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      envType:
+        description: 'Select the environment type'
+        required: true
+        type: choice
+        options: 
+          - dev-us
+          - qa-us
+          - prd-us
+          - psr-us  # Add any other options as needed
+        default: dev-us  # Default selected option
+
 jobs:
   Deploy:
     runs-on: ubuntu-latest
@@ -7,10 +23,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Detect environment(s)
+      - name: Detect environment
         id: detect_environment
         run: |
-          # Create a JSON array from the input
+          # Create a JSON array from the selected input
           ENVIRONMENT_ARRAY=$(echo "${{ inputs.envType }}" | jq -R -s 'split(" ")')
           
           # Set the output variable to use in later steps
