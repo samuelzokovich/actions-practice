@@ -33,7 +33,7 @@ jobs:
       - name: Detect environment(s)
         id: detect_environment
         run: |
-          echo ${{ inputs.envType }}
+          echo ${{ inputs.envType }} | jq -R 'split(" ")
 
       #- name: Confirm ENVIRONMENT variable is set
       #  run: |
