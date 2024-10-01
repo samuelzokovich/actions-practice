@@ -1,26 +1,3 @@
-name: Deploy container web to Stratosphere
-
-on:
-  push:
-    branches:
-      - 'main'
-    paths:
-       - 'ce/app-deployment/template/**'
-       - 'envs/dev-us/web-container/**'
-       - 'envs/psr-us/web-container/**'
-       - 'envs/qa-us/web-container/**'
-
-  workflow_dispatch:
-    inputs:
-      envType: 
-        description: "Please select the Environment Type"
-        required: true
-        type: choice
-        options: 
-          - dev-us
-          - psr-us
-          - qa-us
-
 jobs:
   Deploy:
     runs-on: ubuntu-latest
@@ -33,9 +10,13 @@ jobs:
       - name: Detect environment(s)
         id: detect_environment
         run: |
-          echo ${{ inputs.envType }} | jq -R 'split(" ")'
+          # Create a JSON array from the input
+          ENVIRONMENT_ARRAY=$(echo "${{ inputs.envType }}" | jq -R -s 'split(" ")')
+          
+          # Set the output variable to use in later steps
+          echo "environment_array=$ENVIRONMENT_ARRAY" >> $GITHUB_OUTPUT
 
-      #- name: Confirm ENVIRONMENT variable is set
-      #  run: |
-      #    #/bin/bash  
-      #    echo "The environment variable is: ${{ env.ENVIRONMENT }}"
+      - name: Use environment array
+        run: |
+          # Access the environment array output
+          echo "The environment array is: ${{ steps.detect_environment.outputs.environment_array }}"
