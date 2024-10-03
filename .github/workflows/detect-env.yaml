@@ -1,7 +1,16 @@
-name: Deployment Configuration Pipeline
+name: Dynamic Deployment Configuration Pipeline
 
 on:
   workflow_dispatch:
+    inputs:
+      environments:
+        description: 'Comma-separated list of environments'
+        required: true
+        type: string
+      services:
+        description: 'Comma-separated list of services'
+        required: true
+        type: string
 
 jobs:
   job1:
@@ -15,44 +24,46 @@ jobs:
           # Initialize an empty JSON array
           echo "deployment_config=[]" >> $GITHUB_ENV
 
-      - name: Update deployment config
+      - name: Update deployment config with inputs
         id: update-config
         run: |
-          # Fetch the existing deployment config from the environment variable
-          deployment_config=${{ env.deployment_config }}
+          # Fetch the comma-separated inputs
+          environments="${{ github.event.inputs.environments }}"
+          services="${{ github.event.inputs.services }}"
 
-          # Create new JSON objects to append
-          new_entry1='{
-            "environment": {
-              "name": "dev-us",
-              "services": "service-1",
-              "metadata": {
-                "SX_PROJECT": "project-1",
-                "GEOGRAPHY": "US",
-                "STAGE": "dev"
+          # Split inputs into arrays
+          IFS=',' read -r -a env_array <<< "$environments"
+          IFS=',' read -r -a service_array <<< "$services"
+
+          # Check if the number of environments matches the number of services
+          if [ ${#env_array[@]} -ne ${#service_array[@]} ]; then
+            echo "Error: The number of environments and services must match."
+            exit 1
+          fi
+
+          # Initialize the config JSON array
+          deployment_config="[]"
+
+          # Loop through the arrays and build the deployment config JSON
+          for i in "${!env_array[@]}"; do
+            new_entry=$(jq -n --arg env "${env_array[$i]}" --arg svc "${service_array[$i]}" '{
+              "environment": {
+                "name": $env,
+                "services": $svc,
+                "metadata": {
+                  "SX_PROJECT": "auto-generated-project",
+                  "GEOGRAPHY": "auto-generated-geography",
+                  "STAGE": "auto-generated-stage"
+                }
               }
-            }
-          }'
+            }')
+            deployment_config=$(echo $deployment_config | jq ". + [$new_entry]")
+          done
 
-          new_entry2='{
-            "environment": {
-              "name": "qa-us",
-              "services": "service-2",
-              "metadata": {
-                "SX_PROJECT": "project-2",
-                "GEOGRAPHY": "US",
-                "STAGE": "qa"
-              }
-            }
-          }'
-
-          # Add new entries to the existing deployment_config
-          updated_config=$(echo $deployment_config | jq ". + [$new_entry1, $new_entry2]")
-
-          # Output the updated deployment_config for Job2
-          echo "updated deployment config: $updated_config"
-          echo "deployment_config=$updated_config" >> $GITHUB_ENV
-          echo "deployment_config=$updated_config" >> $GITHUB_OUTPUT
+          # Output the updated deployment config for the next job
+          echo "Updated deployment config: $deployment_config"
+          echo "deployment_config=$deployment_config" >> $GITHUB_ENV
+          echo "deployment_config=$deployment_config" >> $GITHUB_OUTPUT
 
   job2:
     needs: job1
@@ -70,10 +81,8 @@ jobs:
           # Extract and use specific values from the JSON object
           environment_name=$(echo "${{ toJson(matrix.config_entry) }}" | jq -r '.environment.name')
           services=$(echo "${{ toJson(matrix.config_entry) }}" | jq -r '.environment.services')
-          project=$(echo "${{ toJson(matrix.config_entry) }}" | jq -r '.environment.metadata.SX_PROJECT')
 
           # Here you can run deployment tasks based on the extracted values
           echo "Deploying to environment: $environment_name"
           echo "Services: $services"
-          echo "Project: $project"
           # Add your actual deployment logic here
