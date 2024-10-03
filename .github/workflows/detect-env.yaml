@@ -1,56 +1,79 @@
-name: Dynamic Deployment Pipeline
+name: Deployment Configuration Pipeline
 
 on:
   workflow_dispatch:
-    inputs:
-      environments:
-        description: 'List of environments (comma-separated)'
-        required: true
-        type: string
-      applications:
-        description: 'List of application names (comma-separated)'
-        required: true
-        type: string
 
 jobs:
-  get-environments:
+  job1:
     runs-on: ubuntu-latest
     outputs:
-      env_array: ${{ steps.envs.outputs.env_array }}
+      deployment_config: ${{ steps.update-config.outputs.deployment_config }}
     steps:
-      - name: Get environments
-        id: envs
+      - name: Initialize empty deployment config
+        id: init-config
         run: |
-          # Split the input environments into an array
-          IFS=',' read -r -a env_array <<< "${{ github.event.inputs.environments }}"
-          echo "Environments: ${env_array[@]}"
-          # Write the array to GITHUB_OUTPUT for the next job
-          echo "env_array=$(echo ${env_array[@]})" >> $GITHUB_OUTPUT
+          # Initialize an empty JSON array
+          echo "deployment_config=[]" >> $GITHUB_ENV
 
-  get-applications:
-    runs-on: ubuntu-latest
-    needs: get-environments
-    outputs:
-      app_array: ${{ steps.apps.outputs.app_array }}
-    steps:
-      - name: Get applications
-        id: apps
+      - name: Update deployment config
+        id: update-config
         run: |
-          # Split the input applications into an array
-          IFS=',' read -r -a app_array <<< "${{ github.event.inputs.applications }}"
-          echo "Applications: ${app_array[@]}"
-          # Write the array to GITHUB_OUTPUT for the next job
-          echo "app_array=$(echo ${app_array[@]})" >> $GITHUB_OUTPUT
+          # Fetch the existing deployment config from the environment variable
+          deployment_config=${{ env.deployment_config }}
 
-  deploy-applications:
-    needs: [get-environments, get-applications]
+          # Create new JSON objects to append
+          new_entry1='{
+            "environment": {
+              "name": "dev-us",
+              "services": "service-1",
+              "metadata": {
+                "SX_PROJECT": "project-1",
+                "GEOGRAPHY": "US",
+                "STAGE": "dev"
+              }
+            }
+          }'
+
+          new_entry2='{
+            "environment": {
+              "name": "qa-us",
+              "services": "service-2",
+              "metadata": {
+                "SX_PROJECT": "project-2",
+                "GEOGRAPHY": "US",
+                "STAGE": "qa"
+              }
+            }
+          }'
+
+          # Add new entries to the existing deployment_config
+          updated_config=$(echo $deployment_config | jq ". + [$new_entry1, $new_entry2]")
+
+          # Output the updated deployment_config for Job2
+          echo "updated deployment config: $updated_config"
+          echo "deployment_config=$updated_config" >> $GITHUB_ENV
+          echo "deployment_config=$updated_config" >> $GITHUB_OUTPUT
+
+  job2:
+    needs: job1
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        environment: ${{ fromJson(needs.get-environments.outputs.env_array) }}
-        application: ${{ fromJson(needs.get-applications.outputs.app_array) }}
+        config_entry: ${{ fromJson(needs.job1.outputs.deployment_config) }}
     steps:
-      - name: Deploy application
+      - name: Process deployment config entry
         run: |
-          echo "Deploying ${{ matrix.application }} to ${{ matrix.environment }}"
-          # Add actual deployment command here (e.g., kubectl, terraform, etc.)
+          # Access the current config entry for this iteration
+          config_entry=${{ toJson(matrix.config_entry) }}
+          echo "Processing deployment for: $config_entry"
+
+          # Extract and use specific values from the JSON object
+          environment_name=$(echo "${{ toJson(matrix.config_entry) }}" | jq -r '.environment.name')
+          services=$(echo "${{ toJson(matrix.config_entry) }}" | jq -r '.environment.services')
+          project=$(echo "${{ toJson(matrix.config_entry) }}" | jq -r '.environment.metadata.SX_PROJECT')
+
+          # Here you can run deployment tasks based on the extracted values
+          echo "Deploying to environment: $environment_name"
+          echo "Services: $services"
+          echo "Project: $project"
+          # Add your actual deployment logic here
