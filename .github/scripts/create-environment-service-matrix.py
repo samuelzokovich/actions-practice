@@ -33,8 +33,15 @@ def extract_environment_and_service():
                 # If it does not exist, create a new entry
                 env_service_list.append({'environment': env, 'services': [service]})
 
-    # Convert to JSON and write to a file for GitHub Actions to capture
-    with open(os.getenv('GITHUB_OUTPUT'), 'a', encoding="utf-8") as output_file:
+    # Convert to JSON and write to GITHUB_OUTPUT
+    output_string = json.dumps(env_service_list)
+
+    # Escape any special characters for GitHub Actions
+    output_string = output_string.replace('"', '\\"')  # Escape double quotes
+
+    print(f"env_service_list={output_string}")  # For debugging purposes
+    # Write to GITHUB_OUTPUT
+    with open(os.getenv('GITHUB_OUTPUT'), 'a', encoding='utf-8') as output_file:
         output_file.write(f'env_service_list={output_string}\n')
 
 # Call the function
