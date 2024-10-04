@@ -31,10 +31,16 @@ def extract_environment_and_service():
     matrix_output = [{'environment': entry['environment'], 'service': svc}
                      for entry in env_service_list for svc in entry['services']]
 
-    # Write to GITHUB_OUTPUT
     output_string = json.dumps(matrix_output)
-    with open(os.getenv('GITHUB_OUTPUT'), 'a') as output_file:
-        output_file.write(f'env_service_matrix={output_string}\n')
+    
+    '''
+    # Approach 1 Write to GITHUB_OUTPUT
+    #with open(os.getenv('GITHUB_OUTPUT'), 'a') as output_file:
+    #    output_file.write(f'env_service_matrix={output_string}\n')
+    '''
+    # Approach 2
+    with open(os.getenv('GITHUB_OUTPUT'), 'at', encoding="utf-8") as outfile:
+        outfile.write(f'env_service_matrix={output_string}\n')
 
 # Call the function
 extract_environment_and_service()
