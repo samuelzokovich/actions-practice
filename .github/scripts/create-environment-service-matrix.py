@@ -21,26 +21,13 @@ def extract_environment_and_service():
             env, service = match.groups()
             print(f"Matched file path: {file_path}")
 
-            env_entry = next((entry for entry in env_service_list if entry['environment'] == env), None)
-            if env_entry:
-                env_entry['services'].append(service)
-            else:
-                env_service_list.append({'environment': env, 'services': [service]})
+            # Append each service under its respective environment
+            env_service_list.append(f"{env}:{service}")
 
-    # Convert to a matrix-friendly format
-    matrix_output = [{"environment": entry["environment"], "service": svc}
-                     for entry in env_service_list for svc in entry['services']]
-
-    output_string = json.dumps(matrix_output)
-    
-    '''
-    # Approach 1 Write to GITHUB_OUTPUT
-    #with open(os.getenv('GITHUB_OUTPUT'), 'a') as output_file:
-    #    output_file.write(f'env_service_matrix={output_string}\n')
-    '''
-    # Approach 2
-    with open(os.getenv('GITHUB_OUTPUT'), 'at', encoding="utf-8") as outfile:
-        outfile.write(f'env_service_matrix={output_string}\n')
+    # Write to GITHUB_OUTPUT
+    output_file_path = os.getenv('GITHUB_OUTPUT')
+    with open(output_file_path, 'a') as output_file:
+        output_file.write(f'env_service_matrix={json.dumps(env_service_list)}\n')
 
 # Call the function
 extract_environment_and_service()
