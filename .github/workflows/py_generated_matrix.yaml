@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - 'main'
-    paths:
-      - '.github/workflows/py_generated_matrix.yaml'
-      - '.github/scripts/create-environment-service-matrix.py'
 
 jobs:
   extract-services:
@@ -27,8 +24,11 @@ jobs:
     needs: extract-services
     strategy:
       matrix:
-        env_service: ${{ fromJson(needs.extract_services.outputs.env_service_matrix) }}
+        env_service: ${{ fromJson(needs.extract-services.outputs.env_service_matrix) }}
     steps:
       - name: Print environment and service
         run: |
-          echo "Environment: ${{ matrix.env_service.environment }}, Service: ${{ matrix.env_service.service }}"
+          env_service="${{ matrix.env_service }}"
+          env=$(echo $env_service | cut -d':' -f1)
+          service=$(echo $env_service | cut -d':' -f2)
+          echo "Deploying Service: $service in Environment: $env"
