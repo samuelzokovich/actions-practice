@@ -32,7 +32,7 @@ jobs:
     needs: extract-services
     strategy:
       matrix:
-        env: ${{ fromJson(needs.extract-services.outputs.map) }}
+        env: ${{ needs.extract-services.outputs.map }}
     steps:
       - name: Print ${{ matrix.env.environment }}
         run: Services to be deployed ${{ matrix.env.services }}
