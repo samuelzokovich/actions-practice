@@ -1,7 +1,12 @@
 name: CI Workflow for PY
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - '.github/workflows/py_generated_matrix.yaml'
+      - '.github/scripts/create-environment-service-matrix.py'
 
 jobs:
   extract-services:
