@@ -37,11 +37,11 @@ def extract_environment_and_service():
     output_string = json.dumps(env_service_list)
 
     # Escape any special characters for GitHub Actions
-    output_string = output_string.replace('"', '\\"')  # Escape double quotes
+    #output_string = output_string.replace('"', '\\"')  # Escape double quotes
 
     print(f"env_service_list={output_string}")  # For debugging purposes
     # Write to GITHUB_OUTPUT
-    with open(os.getenv('GITHUB_OUTPUT'), 'a', encoding='utf-8') as output_file:
+    with open(os.getenv('GITHUB_OUTPUT'), 'a') as output_file:
         output_file.write(f'env_service_list={output_string}\n')
 
 # Call the function
