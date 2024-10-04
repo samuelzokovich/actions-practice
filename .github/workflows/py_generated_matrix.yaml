@@ -1,0 +1,21 @@
+name: CI Workflow for PY
+
+on:
+  workflow_dispatch:
+
+jobs:
+  extract-services:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Extract environment and service
+        id: extract_services
+        run: |
+          python3 .github/scripts/create-environment-service-matrix.py
+
+      - name: Use the grouped services output
+        run: |
+          grouped_services="${{ steps.extract_services.outputs.env_service_list }}"
+          echo "Grouped services: $grouped_services"
