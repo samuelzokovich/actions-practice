@@ -18,10 +18,10 @@ jobs:
 
       # Step 2: Set executable permissions on the script (if necessary)
       - name: Make print_some_stuff.sh executable
-        run: chmod +x ./github/scripts/print_some_stuff.sh
+        run: chmod +x ./.github/scripts/print_some_stuff.sh
 
       # Step 3: Run the shell script
       - name: Run stuff.sh
         run: |
           echo "Running stuff.sh"
-          ./github/scripts/print_some_stuff.sh
+          ./.github/scripts/print_some_stuff.sh
