@@ -26,13 +26,14 @@ jobs:
         run: |
           grouped_services="${{ steps.extract_services.outputs.env_service_list }}"
           echo "Grouped services: $grouped_services"
+          echo "grouped_services=${grouped_services}" >> $GITHUB_ENV
   
   print-extracted-service:
     runs-on: ubuntu-latest
     needs: extract-services
     strategy:
       matrix:
-        env: ${{ needs.extract-services.outputs.map }}
+        env: ${{ env.grouped_services }}
     steps:
       - name: Print ${{ matrix.env.environment }}
         run: Services to be deployed ${{ matrix.env.services }}
