@@ -1,47 +1,31 @@
-name: Matrix Example
+name: 2D Matrix Example
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
+  deploy:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        node: [14, 16, 18]
-        # You can also add "exclude" or "include" to customize combinations
-        # exclude:
-        #   - os: windows-latest
-        #     node: 14
-        # include:
-        #   - os: ubuntu-latest
-        #     node: 20
+        # Define two dimensions: environment and service
+        env: [dev, staging, production]
+        service: [app1, app2]
+
+    # Use the OS runner (this example doesn't need OS-specific)
+    runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Check out the code
       - name: Check out repository
         uses: actions/checkout@v3
 
-      - name: Set up Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node }}
+      # Step 2: Echo the current environment and service
+      - name: Deploy to ${{ matrix.env }} for ${{ matrix.service }}
+        run: echo "Deploying ${{ matrix.service }} to ${{ matrix.env }}"
 
-      - name: Install dependencies
-        run: npm install
+      # Step 3: (Optional) run a fake deployment command
+      - name: Deploy service
+        run: echo "Deploying ${{ matrix.service }} to the ${matrix.env} environment"
 
-      - name: Run tests on ${{ matrix.os }} with Node.js ${{ matrix.node }}
-        run: npm test
-
-      - name: Upload test results
-        if: success()
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-results-${{ matrix.os }}-node-${{ matrix.node }}
-          path: test-results/
