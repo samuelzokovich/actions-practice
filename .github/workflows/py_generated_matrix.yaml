@@ -11,6 +11,8 @@ on:
 jobs:
   extract-services:
     runs-on: ubuntu-latest
+    outputs:
+      env_service_matrix: ${{ steps.extract_services.outputs.env_service_matrix }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -25,7 +27,7 @@ jobs:
     needs: extract-services
     strategy:
       matrix:
-        env_service: ${{ fromJson(steps.extract_services.outputs.env_service_matrix) }}
+        env_service: ${{ fromJson(needs.extract_services.outputs.env_service_matrix) }}
     steps:
       - name: Print environment and service
         run: |
