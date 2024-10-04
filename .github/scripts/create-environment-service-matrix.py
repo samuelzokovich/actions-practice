@@ -4,7 +4,7 @@ import re
 
 def extract_environment_and_service():
     # Path to the JSON file that stores file changes from the last commit
-    json_file_path = os.path.expanduser("~/files.json")
+    json_file_path = os.path.expanduser(".github/scripts/files.json")
 
     if not os.path.isfile(json_file_path):
         print("Error: files.json does not exist.")
