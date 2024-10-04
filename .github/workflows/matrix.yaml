@@ -23,9 +23,5 @@ jobs:
 
       # Step 2: Echo the current environment and service
       - name: Deploy to ${{ matrix.env }} for ${{ matrix.service }}
-        run: echo "Deploying ${{ matrix.service }} to ${{ matrix.env }}"
-
-      # Step 3: (Optional) run a fake deployment command
-      - name: Deploy service
-        run: echo "Deploying ${{ matrix.service }} to the ${matrix.env} environment"
-
+        run: |
+          echo "Deploying ${{ matrix.service }} to ${{ matrix.env }}"
