@@ -34,9 +34,8 @@ def extract_environment_and_service():
                 env_service_list.append({'environment': env, 'services': [service]})
 
     # Convert to JSON and write to a file for GitHub Actions to capture
-    output_file_path = os.getenv('GITHUB_OUTPUT', 'output.json')
-    with open(output_file_path, 'w') as output_file:
-        json.dump(env_service_list, output_file)
+    with open(os.getenv('GITHUB_OUTPUT'), 'a', encoding="utf-8") as output_file:
+        output_file.write(f'env_service_list={output_string}\n')
 
 # Call the function
 extract_environment_and_service()
