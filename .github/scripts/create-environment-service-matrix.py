@@ -28,7 +28,7 @@ def extract_environment_and_service():
                 env_service_list.append({'environment': env, 'services': [service]})
 
     # Convert to a matrix-friendly format
-    matrix_output = [{'environment': entry['environment'], 'service': svc}
+    matrix_output = [{"environment": entry["environment"], "service": svc}
                      for entry in env_service_list for svc in entry['services']]
 
     output_string = json.dumps(matrix_output)
