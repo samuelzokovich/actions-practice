@@ -1,0 +1,15 @@
+[
+    ".github/workflows/detect-env.yaml",
+    ".github/workflows/detect-env.yaml",
+    "ce/psr-us/cr-web/some.yaml",
+    "envs/dev-us/web-container/services/sample-service.libsonnet",
+    "envs/dev-us/web-container/services/shipment-service.libsonnet",
+    "envs/qa-us/web-container/services/shipment-service.libsonnet",
+    "envs/psr-us/web-container/services/config-service.libsonnet",
+    "envs/dev-us/web-container/env-config.yaml",
+    "envs/dev-us/web-container/env-config.yaml",
+    "envs/psr-us/web-container/env-config.yaml",
+    "envs/qa-us/web-container/env-config.yaml",
+    "envs/psr-us/web-container/service-versions.json",
+    "envs/psr-us/web-container/service-versions.json"
+]
