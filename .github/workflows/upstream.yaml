@@ -1,23 +1,12 @@
-# .github/workflows/upstream.yml
-name: Upstream Workflow
+name: Main Workflow
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        environment: [dev-us, psr-us, qa-us]  # Your environments here
-
-    steps:
-      - name: Checkout 
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Call downstream reusable workflow
-        uses: ./.github/workflows/reusable-downstream.yaml
-        with:
-          environment: ${{ matrix.environment }}  # Pass matrix value to the reusable workflow
-
+  call-reusable-workflow:
+    uses: ./.github/workflows/reusable-workflow.yaml
+    with:
+      example_input: 'Hello, World!'
