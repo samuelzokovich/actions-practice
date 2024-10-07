@@ -1,0 +1,23 @@
+# .github/workflows/reusable-downstream.yml
+name: Reusable Downstream Workflow
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'The environment to run the job for'
+        required: true
+        type: string
+
+jobs:
+  run-job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Print environment
+        run: echo "Running for environment: ${{ inputs.environment }}"
+
+      # Add your steps for each environment here
+      - name: Perform actions for ${{ inputs.environment }}
+        run: |
+          echo "Running deployment for ${{ inputs.environment }}"
