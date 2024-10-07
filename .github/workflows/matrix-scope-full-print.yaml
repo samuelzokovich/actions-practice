@@ -1,24 +1,3 @@
-Skip to content
-Navigation Menu
-samuelzokovich
-/
-actions-practice
-
-Type / to search
-Code
-Issues
-Pull requests
-Actions
-Projects
-Security
-Insights
-Settings
-Matrix Example Workflow
-Create matrix-scope-full-print.yaml #1
-Jobs
-Run details
-Workflow file for this run
-.github/workflows/matrix-scope-full-print.yaml at a7595cd
 name: Matrix Example Workflow
 
 on:
@@ -38,7 +17,8 @@ jobs:
         id: set_matrix
         run: |
           # Define the matrix values as a JSON array
-          echo "matrix=$(echo '[\"service1\", \"service2\", \"service3\"]')" >> $GITHUB_OUTPUT
+          echo 'matrix=["service1", "service2", "service3"]' >> $GITHUB_OUTPUT
+
   # Job to create containers using the matrix from the previous job
   create-container-matrix:
     runs-on: ubuntu-latest
@@ -53,9 +33,9 @@ jobs:
         run: |
           echo "Current service: ${{ matrix.env_service }}"
           echo "Full matrix: ${{ needs.create-env-service-matrix.outputs.env_service_matrix }}"
+
           # You can also iterate over the full matrix if needed
           echo "Iterating over the full matrix:"
           for service in $(echo ${{ needs.create-env-service-matrix.outputs.env_service_matrix }} | jq -r '.[]'); do
             echo "Service: $service"
           done
-Create matrix-scope-full-print.yaml · samuelzokovich/actions-practice@a7595cd
