@@ -1,0 +1,19 @@
+# .github/workflows/upstream.yml
+name: Upstream Workflow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [dev-us, psr-us, qa-us]  # Your environments here
+
+    steps:
+      - name: Call downstream reusable workflow
+        uses: ./github/workflows/reusable-downstream.yaml
+        with:
+          environment: ${{ matrix.environment }}  # Pass matrix value to the reusable workflow
+
