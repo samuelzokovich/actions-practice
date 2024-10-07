@@ -8,6 +8,6 @@ on:
 
 jobs:
   call-reusable-workflow:
-    uses: ./.github/workflows/reusable-workflow.yaml
+    uses: .github/workflows/reusable-workflow.yaml@main
     with:
       example_input: 'Hello, World!'
