@@ -12,6 +12,10 @@ jobs:
         environment: [dev-us, psr-us, qa-us]  # Your environments here
 
     steps:
+      - name: Checkout 
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Call downstream reusable workflow
         uses: ./github/workflows/reusable-downstream.yaml
         with:
