@@ -17,7 +17,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Call downstream reusable workflow
-        uses: ./github/workflows/reusable-downstream.yaml
+        uses: ./.github/workflows/reusable-downstream.yml
         with:
           environment: ${{ matrix.environment }}  # Pass matrix value to the reusable workflow
 
