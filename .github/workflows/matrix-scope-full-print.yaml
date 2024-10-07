@@ -1,0 +1,41 @@
+name: Matrix Example Workflow
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  # Job to create the environment service matrix
+  create-env-service-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      env_service_matrix: ${{ steps.set_matrix.outputs.matrix }}
+    steps:
+      - name: Create Matrix
+        id: set_matrix
+        run: |
+          # Define the matrix values as a JSON array
+          echo "matrix=$(echo '[\"service1\", \"service2\", \"service3\"]')" >> $GITHUB_OUTPUT
+
+  # Job to create containers using the matrix from the previous job
+  create-container-matrix:
+    runs-on: ubuntu-latest
+    needs: create-env-service-matrix
+    env:
+      HAS_RUN: false
+    strategy:
+      matrix:
+        env_service: ${{ fromJson(needs.create-env-service-matrix.outputs.env_service_matrix) }}
+    steps:
+      - name: Access Matrix
+        run: |
+          echo "Current service: ${{ matrix.env_service }}"
+          echo "Full matrix: ${{ needs.create-env-service-matrix.outputs.env_service_matrix }}"
+
+          # You can also iterate over the full matrix if needed
+          echo "Iterating over the full matrix:"
+          for service in $(echo ${{ needs.create-env-service-matrix.outputs.env_service_matrix }} | jq -r '.[]'); do
+            echo "Service: $service"
+          done
