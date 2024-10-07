@@ -1,0 +1,33 @@
+name: First Workflow
+
+on:
+  workflow_dispatch:  # Can be manually triggered
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [dev-us, psr-us, qa-us]  # Matrix of environments
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run matrix job
+        run: |
+          echo "Running job for environment: ${{ matrix.environment }}"
+
+      - name: Trigger second workflow
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'second-workflow.yml',  # The file name of the second workflow
+              ref: context.ref,  # Reference branch
+              inputs: {
+                environment: '${{ matrix.environment }}',  # Pass matrix environment to second workflow
+              }
+            })
