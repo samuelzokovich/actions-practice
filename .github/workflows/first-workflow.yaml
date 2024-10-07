@@ -25,9 +25,9 @@ jobs:
             github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              workflow_id: 'second-workflow.yml',  # The file name of the second workflow
-              ref: context.ref,  # Reference branch
+              workflow_id: 'second-workflow.yml',
+              ref: context.ref,
               inputs: {
-                environment: '${{ matrix.environment }}',  # Pass matrix environment to second workflow
+                environment: "${{ matrix.environment }}"  # Pass matrix environment to second workflow
               }
             })
