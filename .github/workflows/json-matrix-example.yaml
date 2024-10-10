@@ -11,7 +11,7 @@ jobs:
       - name: Set Dynamic Matrix
         id: setmatrix
         run: |
-           matrixStringifiedObject="{\"include\":[{\"psr-us\":\"config-service\"},{\"dev-us\":\"sample-sevrice\"}]}"
+           matrixStringifiedObject="{[{\"psr-us\":\"config-service\"},{\"dev-us\":\"sample-sevrice\"}]}"
            echo "matrix=$matrixStringifiedObject" >> $GITHUB_OUTPUT
   job2:
     needs: job1
@@ -19,4 +19,4 @@ jobs:
     strategy:
       matrix: ${{ fromJson(needs.job1.outputs.matrix) }}
     steps:
-    - run: echo Run ${{ matrix.run }}
+    - run: echo Run ${{ matrix.psr-us }}
