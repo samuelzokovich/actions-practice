@@ -17,7 +17,6 @@ jobs:
     needs: job1
     runs-on: ubuntu-latest
     strategy:
-		# Making use of fromJson (JSON syntax)
       matrix: ${{ fromJson(needs.job1.outputs.matrix) }}
     steps:
     - run: echo Run ${{ matrix.run }}
