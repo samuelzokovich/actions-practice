@@ -6,7 +6,6 @@ jobs:
   job1:
     runs-on: ubuntu-latest
     outputs:
-	# Making use of job.output
        matrix: ${{ steps.setmatrix.outputs.matrix }}
     steps:
       - name: Set Dynamic Matrix
