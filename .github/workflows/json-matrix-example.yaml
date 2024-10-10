@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
 # The Trigger event 
 jobs:
-  job1:
+  create-map:
     runs-on: ubuntu-latest
     outputs:
        matrix: ${{ steps.setmatrix.outputs.matrix }}
@@ -11,12 +11,12 @@ jobs:
       - name: Set Dynamic Matrix
         id: setmatrix
         run: |
-           matrixStringifiedObject="{[{\"psr-us\":\"config-service\"},{\"dev-us\":\"sample-sevrice\"}]}"
+           matrixStringifiedObject="{\'include\':[{\'psr-us\':\'config-service\'},{\'dev-us\':\'sample-sevrice\'}]}"
            echo "matrix=$matrixStringifiedObject" >> $GITHUB_OUTPUT
-  job2:
-    needs: job1
+  get-map:
+    needs: create-map
     runs-on: ubuntu-latest
     strategy:
-      matrix: ${{ fromJson(needs.job1.outputs.matrix) }}
+      matrix: ${{ fromJson(needs.create-map.outputs.matrix) }}
     steps:
     - run: echo Run ${{ matrix.psr-us }}
