@@ -11,7 +11,7 @@ jobs:
       - name: Set Dynamic Matrix
         id: setmatrix
         run: |
-           matrixStringifiedObject="{\'include\':[{\'psr-us\':\'config-service\'},{\'dev-us\':\'sample-sevrice\'}]}"
+           matrixStringifiedObject="{\"include\":[{\"psr-us\":\"config-service\"},{\"dev-us\":\"sample-sevrice\"}]}"
            echo "matrix=$matrixStringifiedObject" >> $GITHUB_OUTPUT
   get-map:
     needs: create-map
