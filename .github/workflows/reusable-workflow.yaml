@@ -4,7 +4,6 @@ on:
   workflow_call:
     inputs:
       example_input:
-        description: 'An example input'
         required: true
         type: string
 
@@ -12,6 +11,5 @@ jobs:
   example_job:
     runs-on: ubuntu-latest
     steps:
-      - name: Print input
-        run: |
-          echo "Input value: ${{ inputs.example_input }}"
+      - name: Example Step
+        run: echo "This is a reusable workflow step with input ${{ inputs.example_input }}"
