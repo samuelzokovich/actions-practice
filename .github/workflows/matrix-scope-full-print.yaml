@@ -1,41 +1,20 @@
-name: Matrix Example Workflow
+name: Multi-Matrix Workflow
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
-  # Job to create the environment service matrix
-  create-env-service-matrix:
+  deploy:
     runs-on: ubuntu-latest
-    outputs:
-      env_service_matrix: ${{ steps.set_matrix.outputs.matrix }}
-    steps:
-      - name: Create Matrix
-        id: set_matrix
-        run: |
-          # Define the matrix values as a JSON array
-          echo 'matrix=["service1", "service2", "service3"]' >> $GITHUB_OUTPUT
-
-  # Job to create containers using the matrix from the previous job
-  create-container-matrix:
-    runs-on: ubuntu-latest
-    needs: create-env-service-matrix
-    env:
-      HAS_RUN: false
     strategy:
       matrix:
-        env_service: ${{ fromJson(needs.create-env-service-matrix.outputs.env_service_matrix) }}
+        environment: [dev, qa, prod]      # First matrix dimension
+        service: [service1, service2]     # Second matrix dimension
     steps:
-      - name: Access Matrix
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Deploy
         run: |
-          echo "Current service: ${{ matrix.env_service }}"
-          echo "Full matrix: ${{ needs.create-env-service-matrix.outputs.env_service_matrix }}"
-
-          # You can also iterate over the full matrix if needed
-          echo "Iterating over the full matrix:"
-          for service in $(echo ${{ needs.create-env-service-matrix.outputs.env_service_matrix }} | jq -r '.[]'); do
-            echo "Service: $service"
-          done
+          echo "Deploying ${matrix.service} to ${matrix.environment}"
+          # Add your deployment commands here
