@@ -8,6 +8,8 @@ jobs:
     outputs:
       matrix: ${{ steps.create_matrix.outputs.matrix }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Create matrix from Python
         id: create_matrix
         run: |
