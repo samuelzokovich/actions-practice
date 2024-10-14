@@ -1,0 +1,24 @@
+name: JSON matrix iteration upstream workflow
+run-name: JSON matrix iteration upstream workflow
+on:
+  workflow_dispatch:
+jobs:
+  create_matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.create_matrix.outputs.matrix }}
+    steps:
+      - name: Create matrix from Python
+        id: create_matrix
+        run: |
+          python3 .github/script/create_JSON_matrix.py
+  iterate_over_matrix:
+    runs-on: ubuntu-latest
+    needs: ['create_matrix']
+    strategy:
+      matrix: ${{ fromJson(needs.create_matrix.outputs.matrix) }}
+    steps:
+      - name: Print matrix element
+        run: |
+          echo ${{ matrix.environment }}
+          echo ${{ matrix.service }}
