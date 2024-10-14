@@ -11,7 +11,7 @@ jobs:
       - name: Create matrix from Python
         id: create_matrix
         run: |
-          python3 .github/script/create_JSON_matrix.py
+          echo "matrix=$(python3 .github/scripts/create_JSON_matrix.py)" >> $GITHUB_OUTPUT
   iterate_over_matrix:
     runs-on: ubuntu-latest
     needs: ['create_matrix']
