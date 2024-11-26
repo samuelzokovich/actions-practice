@@ -1,0 +1,26 @@
+name: Example Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      dryRun:
+        description: Dry Run
+        type: boolean
+        default: true
+
+env:
+  dryRun: ${{ inputs.dryRun }}
+
+jobs:
+  example:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check dryRun
+        run: echo "dryRun is ${{ env.dryRun }}"
+
+      - name: Auto Merge
+        if: ${{ env.dryRun == 'false' }}
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          pull-request-number: ${{ steps.create_pr.outputs.pull-request-number }}
+          merge-method: merge
