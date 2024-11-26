@@ -1,0 +1,31 @@
+name: Accept JSON Input
+
+on:
+  workflow_dispatch:
+    inputs:
+      jsonInput:
+        description: "JSON input string"
+        required: true
+        default: '{ "customerCode": "pd", "instance": "psr", "stratosphereEnvironmentType": "psr", "stratosphereGeography": "us", "environmentName": "psr", "environmentShort": "psr", "stratosphereEnvironment": "staging", "customerTag": "internal", "costCenterId": "474000" }'
+
+jobs:
+  process-json:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print JSON Input
+        run: |
+          echo "Received JSON:"
+          echo '${{ github.event.inputs.jsonInput }}'
+      
+      - name: Parse and Use JSON
+        id: parse_json
+        run: |
+          echo '${{ github.event.inputs.jsonInput }}' > input.json
+          cat input.json | jq '.'
+        
+      - name: Access Specific Fields
+        run: |
+          instance=$(cat input.json | jq -r '.instance')
+          environmentShort=$(cat input.json | jq -r '.environmentShort')
+          echo "Instance: $instance"
+          echo "Environment Short: $environmentShort"
