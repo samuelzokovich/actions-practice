@@ -42,3 +42,4 @@ output "resource_group_location" {
   description = "The location of the created Resource Group"
   value  = azurerm_resource_group.rg.location
 }
+
