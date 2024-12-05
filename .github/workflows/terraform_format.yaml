@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
@@ -55,7 +57,7 @@ jobs:
           git config user.email "actions@github.com"
           git add .
           git commit -m "chore: format Terraform files"
-          git push
+          git push origin HEAD:${{ github.head_ref }}
 
       - name: Comment on PR if formatting fails
         if: failure()
