@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
@@ -29,7 +31,7 @@ jobs:
         id: format
         run: |
           # Find changed .tf files
-          FILES=$(git diff --name-only HEAD^ HEAD | grep '\.tf$')
+          FILES=$(git diff --name-only HEAD~1 HEAD | grep '\.tf$')
     
           if [[ -z "$FILES" ]]; then
               echo "No Terraform files changed."
