@@ -1,0 +1,72 @@
+name: Terraform Format Check
+
+on:
+  pull_request:
+    paths:
+      - '**/*.tf'
+
+jobs:
+  terraform-fmt:
+    runs-on: ubuntu-latest
+
+    env:
+      formatted_files: ''
+
+    permissions:
+      contents: write
+      pull-requests: write  # Required to comment on PRs
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: latest
+
+      - name: Check and Format Terraform Files
+        id: format
+        run: |
+          # Find changed .tf files
+          FILES=$(git diff --name-only HEAD^ HEAD | grep '\.tf$')
+    
+          if [[ -z "$FILES" ]]; then
+              echo "No Terraform files changed."
+              echo "formatted_files=" >> $GITHUB_ENV
+              exit 0
+          fi
+    
+          echo "Found changed Terraform files:"
+          echo "$FILES"
+          echo "formatted_files=$FILES" >> $GITHUB_ENV
+    
+          # Run terraform fmt
+          terraform fmt -recursive || {
+              echo "Terraform formatting failed."
+              echo "Error during terraform fmt." > error.txt
+              exit 1
+          }
+
+      - name: Commit formatted files
+        if: success() && ${{ env.formatted_files }} != ''
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "chore: format Terraform files"
+          git push
+
+      - name: Comment on PR if formatting fails
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const error = fs.readFileSync('error.txt', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `### :warning: Terraform Formatting Failed\n\`\`\`\n${error}\n\`\`\``
+            });
