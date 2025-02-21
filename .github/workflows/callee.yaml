@@ -1,5 +1,5 @@
-# .github/workflows/mywf.yaml
-name: "My Reusable Workflow"
+# .github/workflows/callee.yaml
+name: "Callee Workflow"
 
 on:
   workflow_call:
@@ -9,8 +9,9 @@ on:
         type: string
 
 jobs:
-  print_input:
+  example_job:
     runs-on: ubuntu-latest
     steps:
-      - name: Print Input
-        run: echo "Input received: ${{ inputs.input }}"
+      - name: Print input
+        run: |
+          echo "Input: ${{ inputs.input }}"
