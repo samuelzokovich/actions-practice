@@ -1,0 +1,16 @@
+# .github/workflows/mywf.yaml
+name: "My Reusable Workflow"
+
+on:
+  workflow_call:
+    inputs:
+      input:
+        required: true
+        type: string
+
+jobs:
+  print_input:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Input
+        run: echo "Input received: ${{ inputs.input }}"
